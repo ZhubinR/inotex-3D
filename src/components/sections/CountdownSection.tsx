@@ -82,46 +82,62 @@ export const CountdownSection: React.FC = () => {
       data-theme="dark"
       className="flex min-h-[100svh] flex-col justify-center px-5 py-32 sm:px-10"
     >
-      <div className="lg:w-[52%]">
-        <p className="tag label mb-6">05 — Register</p>
-        <h2 className="display fa text-[clamp(2.2rem,6vw,5.8rem)]">
+      <div className="lg:w-[54%]">
+        <p className="tag label mb-6">05 — Registration & Access</p>
+        <h2 className="display fa text-[clamp(2.4rem,6vw,5.6rem)] font-extrabold tracking-tight">
           جای شما در
           <br />
-          اینوتکس خالی است.
+          <span className="text-[color:var(--yellow)]">اینوتکس ۲۰۲۶</span> خالی است.
         </h2>
 
         {left ? (
-          <div className="mt-12 grid grid-cols-4 gap-3" dir="rtl">
+          <div className="mt-12 grid grid-cols-4 gap-4" dir="rtl">
             {UNITS.map((u) => (
-              <div key={u.key} className="border-t border-[color:var(--line)] pt-3">
-                <div className="display text-[clamp(2rem,5vw,4.2rem)] tabular-nums">
+              <div key={u.key} className="glass-panel rounded-2xl p-4 text-center">
+                <div className="display text-[clamp(2rem,5vw,3.8rem)] font-extrabold text-white tabular-nums">
                   {left[u.key].toLocaleString("fa-IR", { minimumIntegerDigits: 2, useGrouping: false })}
                 </div>
-                <div className="fa text-sm text-[color:var(--muted)]">{u.label}</div>
+                <div className="fa mt-1 text-xs font-bold text-white/70">{u.label}</div>
               </div>
             ))}
           </div>
         ) : (
-          <p className="fa mt-10 text-lg text-[color:var(--muted)]">تاریخ دوره‌ی بعد به‌زودی اعلام می‌شود. پیش‌ثبت‌نام کنید تا اولین نفر مطلع شوید.</p>
+          <div className="mt-8 inline-flex items-center gap-3 rounded-xl border border-white/15 bg-white/5 px-4 py-3 backdrop-blur-md">
+            <span className="h-2 w-2 rounded-full bg-[color:var(--yellow)] animate-pulse" />
+            <p className="fa text-sm font-medium text-white/90">
+              تاریخ دوره‌ی بعدی به‌زودی اعلام می‌شود. هم‌اکنون پیش‌ثبت‌نام کنید تا نخستین نفر از شرایط غرفه‌داری مطلع شوید.
+            </p>
+          </div>
         )}
 
         {sent ? (
-          <div className="mt-12">
-            <h3 className="fa text-2xl font-bold">درخواست شما ثبت شد.</h3>
-            <p className="fa mt-3 max-w-sm leading-8 text-[color:var(--muted)]">
-              کارشناسان دبیرخانه برای ارائه پکیج غرفه‌داری و شرایط حضور با شما تماس می‌گیرند.
+          <div className="glass-panel mt-10 rounded-2xl border border-[color:var(--teal)]/40 p-8 shadow-xl">
+            <div className="flex items-center gap-3 text-[color:var(--teal)]">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[color:var(--teal)]/20 text-xl font-bold">
+                ✓
+              </span>
+              <h3 className="fa text-xl font-bold text-white">درخواست شما با موفقیت ثبت شد</h3>
+            </div>
+            <p className="fa mt-4 max-w-md leading-8 text-white/80">
+              کارشناسان دبیرخانه اینوتکس به زودی برای ارسال کاتالوگ جامع، تخفیف‌های ثبت‌نام زودهنگام و راهنمای انتخاب غرفه با شما تماس می‌گیرند.
             </p>
-            <button onClick={() => setSent(false)} className="fa mt-4 text-sm underline underline-offset-4">
-              ثبت درخواست جدید
+            <button
+              onClick={() => setSent(false)}
+              className="pill mt-6 !px-5 !py-2.5 !text-xs font-bold"
+            >
+              ثبت درخواست دیگر
             </button>
           </div>
         ) : (
           <form
-            className="mt-12 max-w-md"
+            className="mt-10 max-w-lg"
             onSubmit={submit}
             noValidate
           >
-            <div className="flex flex-wrap gap-2">
+            <label className="fa block text-xs font-bold text-white/70 mb-3">
+              نقش یا نوع مشارکت شما در رویداد:
+            </label>
+            <div className="flex flex-wrap gap-2.5">
               {ROLES.map((r, i) => (
                 <button
                   key={r.id}
@@ -132,10 +148,10 @@ export const CountdownSection: React.FC = () => {
                     SceneState.rolePulse = performance.now();
                   }}
                   aria-pressed={role === r.id}
-                  className={`fa cursor-pointer rounded-full border px-4 py-2 text-sm font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffb81d] ${
+                  className={`fa cursor-pointer rounded-full border px-5 py-2.5 text-sm font-bold transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffb81d] ${
                     role === r.id
-                      ? "border-[#ffb81d] bg-[#ffb81d] text-[#0a1a2b] shadow-md"
-                      : "border-[color:var(--line)] text-white/90 hover:border-white/50 hover:bg-white/5"
+                      ? "border-[#ffb81d] bg-[#ffb81d] text-[#0a1a2b] shadow-md shadow-[#ffb81d]/20 scale-102"
+                      : "border-white/20 bg-white/5 text-white/90 hover:border-white/50 hover:bg-white/10"
                   }`}
                 >
                   {r.label}
@@ -143,26 +159,41 @@ export const CountdownSection: React.FC = () => {
               ))}
             </div>
 
-            <input
-              className="field mt-8"
-              dir="ltr"
-              required
-              name="contact"
-              type="text"
-              inputMode="email"
-              autoComplete="email"
-              value={contact}
-              onChange={(e) => { setContact(e.target.value); if (error) setError(""); }}
-              aria-invalid={!!error}
-              placeholder="ایمیل یا شماره تماس"
-              aria-label="ایمیل یا شماره تماس"
-            />
+            <div className="field-container mt-6">
+              <label htmlFor="contact-input" className="fa block text-xs font-bold text-white/70 mb-2">
+                ایمیل یا شماره همراه (جهت هماهنگی و ارسال کاتالوگ):
+              </label>
+              <input
+                id="contact-input"
+                className={`field ${error ? "field-error" : ""}`}
+                dir="ltr"
+                required
+                name="contact"
+                type="text"
+                inputMode="email"
+                autoComplete="email"
+                value={contact}
+                onChange={(e) => { setContact(e.target.value); if (error) setError(""); }}
+                aria-invalid={!!error}
+                placeholder="example@domain.com یا 0912..."
+                aria-label="ایمیل یا شماره تماس"
+              />
+            </div>
 
-            {error && <p role="alert" className="fa mt-3 text-sm text-[#ffb81d]">{error}</p>}
+            {error && (
+              <div role="alert" className="mt-3 flex items-center gap-2 text-xs font-bold text-[#ffb81d]">
+                <span>⚠</span>
+                <span className="fa">{error}</span>
+              </div>
+            )}
 
-            <button type="submit" disabled={busy} className="pill pill-solid mt-10 disabled:opacity-60">
-              {busy ? "در حال ارسال…" : "ارسال درخواست و دریافت کاتالوگ غرفه‌ها"}
-              <span aria-hidden>←</span>
+            <button
+              type="submit"
+              disabled={busy}
+              className="pill pill-solid mt-8 w-full sm:w-auto !py-3.5 !px-8 text-sm font-extrabold shadow-lg disabled:opacity-60"
+            >
+              {busy ? "در حال ارسال و ثبت در دبیرخانه…" : "ارسال درخواست و دریافت کاتالوگ غرفه‌ها"}
+              <span aria-hidden="true">←</span>
             </button>
           </form>
         )}

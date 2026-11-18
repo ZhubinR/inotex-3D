@@ -11,17 +11,17 @@ import { SceneState, subscribeChapter } from "@/lib/SceneState";
 const PHOTOS = [
   {
     chapter: 3, // آمار
-    src: "/images/stats/crowd.jpg",
+    src: "/images/gallery/exhibition-hall.jpg",
     base: "#385dae",
-    img: { mixBlendMode: "luminosity" as const, opacity: 0.5, filter: "grayscale(1) contrast(1.1)" },
-    overlay: "linear-gradient(to left, rgb(56 93 174 / 0.9) 20%, rgb(56 93 174 / 0.2))",
+    img: { mixBlendMode: "luminosity" as const, opacity: 0.35, filter: "grayscale(1) contrast(1.15)" },
+    overlay: "linear-gradient(to left, rgb(56 93 174 / 0.92) 20%, rgb(56 93 174 / 0.3))",
   },
   {
     chapter: 5, // ثبت‌نام
-    src: "/images/register/inonight.jpg",
+    src: "/images/ecosystem-inonight.jpg",
     base: "#023d5b",
-    img: { opacity: 0.45 },
-    overlay: "linear-gradient(to left, #023d5b 25%, rgb(2 61 91 / 0.35))",
+    img: { opacity: 0.35 },
+    overlay: "linear-gradient(to left, #023d5b 25%, rgb(2 61 91 / 0.45))",
   },
 ];
 
@@ -102,12 +102,6 @@ export const Backdrop: React.FC = () => {
       <div className="blob blob-1" />
       <div className="blob blob-2" />
 
-      {process.env.NODE_ENV === "development" &&
-        PHOTOS.filter((p) => chapter === p.chapter && failed[p.src]).map((p) => (
-          <span key={p.src} dir="ltr" className="absolute bottom-3 left-3 rounded bg-black/50 px-2 py-1 font-mono text-[10px] text-white/80">
-            missing bg photo: {p.src}
-          </span>
-        ))}
     </div>
   );
 };

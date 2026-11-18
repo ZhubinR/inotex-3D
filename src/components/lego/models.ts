@@ -1,7 +1,9 @@
 // src/components/lego/models.ts
 import type { LegoModel } from "./LegoBuilder";
 import { buildHeroLogoModel } from "../3d/HeroLogoModel";
-import { buildSceneModel } from "../3d/sceneModels";
+import { buildSceneModel, clearSceneMaterialsCache } from "../3d/sceneModels";
+
+export { clearSceneMaterialsCache };
 
 export type ModelName =
   | "hall"

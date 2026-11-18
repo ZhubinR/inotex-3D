@@ -13,6 +13,7 @@ import { ManifestoSection } from "@/components/sections/ManifestoSection";
 import { EcosystemSection } from "@/components/sections/EcosystemSection";
 import { StatsSection } from "@/components/sections/StatsSection";
 import { GallerySection } from "@/components/sections/GallerySection";
+import { ExpressSection } from "@/components/sections/ExpressSection";
 import { CountdownSection } from "@/components/sections/CountdownSection";
 import { Footer } from "@/components/layout/Footer";
 import { SceneState } from "@/lib/SceneState";
@@ -33,13 +34,14 @@ export default function Home() {
       <InotexCanvas ready={ready} />
       <Navbar ready={ready} />
 
-      {/* ترتیب sectionهای data-chapter باید با KEYS در InotexCanvas یکی باشد */}
+      {/* بخش‌های اصلی صفحه وب‌سایت اینوتکس */}
       <main className="relative z-10">
         <HeroSection ready={ready} />
         <ManifestoSection />
         <EcosystemSection />
         <StatsSection />
         <GallerySection />
+        <ExpressSection />
         <CountdownSection />
       </main>
       <Footer />

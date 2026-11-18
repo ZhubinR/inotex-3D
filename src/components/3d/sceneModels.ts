@@ -42,37 +42,55 @@ function mat(c: number, kind: Kind = "solid") {
     m = new THREE.MeshPhysicalMaterial({
       color: c,
       roughness: 0.08,
+      metalness: 0.04,
       transparent: true,
-      opacity: 0.5,
-      clearcoat: 1,
+      opacity: 0.52,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.05,
+      ior: 1.5,
+      reflectivity: 0.85,
       depthWrite: false,
     });
   } else if (kind === "glow") {
     m = new THREE.MeshStandardMaterial({
       color: c,
       emissive: c,
-      emissiveIntensity: 1.5,
-      roughness: 0.4,
+      emissiveIntensity: 1.15,
+      roughness: 0.25,
+      metalness: 0.06,
     });
   } else if (kind === "beam") {
     m = new THREE.MeshBasicMaterial({
       color: c,
       transparent: true,
-      opacity: 0.16,
+      opacity: 0.1,
       depthWrite: false,
       side: THREE.DoubleSide,
     });
   } else {
     m = new THREE.MeshPhysicalMaterial({
       color: c,
-      roughness: 0.3,
-      metalness: 0.04,
-      clearcoat: 0.6,
-      clearcoatRoughness: 0.2,
+      roughness: 0.22,
+      metalness: 0.08,
+      clearcoat: 0.75,
+      clearcoatRoughness: 0.14,
+      reflectivity: 0.65,
+      sheen: 0.25,
+      sheenColor: new THREE.Color(c),
+      sheenRoughness: 0.32,
     });
   }
   mats.set(key, m);
   return m;
+}
+
+/**
+ * پاکسازی صریح کش متریال‌های اشتراکی در زمان Unmount شدن کامل Canvas
+ * از بروز نشت حافظه و متریال‌های Dispose شده جلوگیری می‌کند.
+ */
+export function clearSceneMaterialsCache() {
+  mats.forEach((m) => m.dispose());
+  mats.clear();
 }
 
 const rnd = (i: number) => {
@@ -326,10 +344,14 @@ class SB {
   }
 }
 
-const slab = (b: SB, w: number, d: number, c: number = K.light) =>
+const slab = (b: SB, w: number, d: number, c: number = K.light) => {
   b.box(w, 0.3, d, [0, 0, 0], c);
-const disc = (b: SB, r: number, c: number = K.light) =>
+  b.box(w * 1.025, 0.08, d * 1.025, [0, -0.19, 0], K.navy);
+};
+const disc = (b: SB, r: number, c: number = K.light) => {
   b.cyl(r, r, 0.3, [0, 0, 0], c, {}, 56);
+  b.cyl(r * 1.025, r * 1.025, 0.08, [0, -0.19, 0], K.navy, {}, 56);
+};
 
 // ---------------------------------------------------------------------------
 // ABOUT ("meeting"): technological development — ascending steps
@@ -728,9 +750,11 @@ function night(b: SB) {
   b.layer();
   const globe = b.put(new THREE.IcosahedronGeometry(0.95, 1), K.teal, [0, F + 3.9, 0], { kind: "glow" });
   globe.castShadow = false;
-  globe.material = new THREE.MeshBasicMaterial({
+  globe.material = new THREE.MeshStandardMaterial({
     color: K.teal,
     wireframe: true,
+    roughness: 0.2,
+    metalness: 0.6,
   });
   b.sph(0.32, [0, F + 3.9, 0], K.yellow, { kind: "glow" });
   [0, 2, 4].forEach((i) => b.link(heads[i], [0, F + 3.9, 0], 0.02, K.yellow, { kind: "glow" }));

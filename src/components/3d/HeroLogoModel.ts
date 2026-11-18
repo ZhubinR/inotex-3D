@@ -1,5 +1,6 @@
 // src/components/3d/HeroLogoModel.ts
 import * as THREE from "three";
+import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import type { LegoModel } from "../lego/LegoBuilder";
 
 const BLUE = 0x385dae;
@@ -11,58 +12,82 @@ const GLASS = 0x8fd3f0;
 /**
  * High-precision 3D Sculptural Emblem of the INOTEX Brand
  * - Extruded mathematically from the official brand vector paths
- * - Smooth beveled PBR solid materials (no toy Lego studs or staircase steps)
+ * - Smooth beveled PBR solid materials with fine specular response & clearcoat
  * - Complete, unmistakable INOTEX Wordmark (I · N · O · T · E · X)
  * - Monumental Point-Up Hexagonal "O" jewel centerpiece in radiant INOTEX Yellow
  * - Dual kinetic hexagonal orbital rings (Brandbook page 22 cover motif)
- * - Architectural navy titanium pedestal with yellow metallic trim
- * - Precision floating geometric innovation nodes
+ * - Architectural stepped titanium pedestal with chamfered metallic trim
+ * - Precision floating hexagonal innovation nodes at calibrated depth planes
  */
 export function buildHeroLogoModel(fitSize = 3.85): LegoModel {
   const root = new THREE.Group();
   const content = new THREE.Group();
 
-  // Premium Physical Materials
+  // Premium Physical Materials — Calibrated Studio PBR
   const matYellow = new THREE.MeshPhysicalMaterial({
     color: YELLOW,
-    roughness: 0.16,
-    metalness: 0.12,
+    roughness: 0.14,
+    metalness: 0.14,
     clearcoat: 1.0,
-    clearcoatRoughness: 0.08,
+    clearcoatRoughness: 0.06,
+    reflectivity: 0.75,
+    sheen: 0.35,
+    sheenColor: new THREE.Color(0xffe89e),
+    sheenRoughness: 0.28,
   });
 
   const matBlue = new THREE.MeshPhysicalMaterial({
     color: BLUE,
-    roughness: 0.2,
-    metalness: 0.1,
+    roughness: 0.18,
+    metalness: 0.12,
     clearcoat: 0.95,
-    clearcoatRoughness: 0.12,
+    clearcoatRoughness: 0.08,
+    reflectivity: 0.65,
+    sheen: 0.3,
+    sheenColor: new THREE.Color(0x6595ff),
+    sheenRoughness: 0.32,
   });
 
   const matTeal = new THREE.MeshPhysicalMaterial({
     color: TEAL,
-    roughness: 0.18,
-    metalness: 0.08,
-    clearcoat: 0.9,
-    clearcoatRoughness: 0.14,
+    roughness: 0.16,
+    metalness: 0.1,
+    clearcoat: 0.95,
+    clearcoatRoughness: 0.08,
+    reflectivity: 0.65,
+    sheen: 0.3,
+    sheenColor: new THREE.Color(0x2fe0b0),
+    sheenRoughness: 0.32,
   });
 
   const matNavy = new THREE.MeshPhysicalMaterial({
     color: NAVY,
-    roughness: 0.32,
-    metalness: 0.28,
-    clearcoat: 0.65,
-    clearcoatRoughness: 0.2,
+    roughness: 0.28,
+    metalness: 0.42,
+    clearcoat: 0.55,
+    clearcoatRoughness: 0.18,
+    reflectivity: 0.8,
+  });
+
+  const matGoldTrim = new THREE.MeshPhysicalMaterial({
+    color: YELLOW,
+    roughness: 0.12,
+    metalness: 0.68,
+    clearcoat: 0.9,
+    clearcoatRoughness: 0.08,
   });
 
   const matGlass = new THREE.MeshPhysicalMaterial({
     color: GLASS,
-    roughness: 0.08,
+    roughness: 0.06,
     metalness: 0.05,
     transparent: true,
-    opacity: 0.72,
+    opacity: 0.62,
     clearcoat: 1.0,
-    ior: 1.5,
+    clearcoatRoughness: 0.04,
+    ior: 1.52,
+    reflectivity: 0.85,
+    depthWrite: false,
   });
 
   // Layer groups for entrance transitions
@@ -101,9 +126,9 @@ export function buildHeroLogoModel(fitSize = 3.85): LegoModel {
   const hexGeo = new THREE.ExtrudeGeometry(hexShape, {
     depth: 18,
     bevelEnabled: true,
-    bevelSegments: 4,
-    bevelSize: 2.2,
-    bevelThickness: 2.2,
+    bevelSegments: 5,
+    bevelSize: 2.6,
+    bevelThickness: 2.6,
   });
   hexGeo.center();
 
@@ -113,16 +138,48 @@ export function buildHeroLogoModel(fitSize = 3.85): LegoModel {
   hexMesh.position.set(6, 32, 0);
   layer2.add(hexMesh);
 
-  // Inner floating Technology facet (Translucent teal prism in the hollow center)
-  const innerFacetGeo = new THREE.CylinderGeometry(14, 14, 14, 6);
+  // Concentric interior chamfer ring: nested inside the inner hollow to add architectural depth
+  const innerTrimShape = new THREE.Shape();
+  innerTrimShape.moveTo(0, 24.0);
+  innerTrimShape.lineTo(20.78, 12.0);
+  innerTrimShape.lineTo(20.78, -12.0);
+  innerTrimShape.lineTo(0, -24.0);
+  innerTrimShape.lineTo(-20.78, -12.0);
+  innerTrimShape.lineTo(-20.78, 12.0);
+  innerTrimShape.closePath();
+
+  const innerTrimHole = new THREE.Path();
+  innerTrimHole.moveTo(0, 21.0);
+  innerTrimHole.lineTo(-18.18, 10.5);
+  innerTrimHole.lineTo(-18.18, -10.5);
+  innerTrimHole.lineTo(0, -21.0);
+  innerTrimHole.lineTo(18.18, -10.5);
+  innerTrimHole.lineTo(18.18, 10.5);
+  innerTrimHole.closePath();
+  innerTrimShape.holes.push(innerTrimHole);
+
+  const innerTrimGeo = new THREE.ExtrudeGeometry(innerTrimShape, {
+    depth: 14,
+    bevelEnabled: true,
+    bevelSegments: 3,
+    bevelSize: 0.8,
+    bevelThickness: 0.8,
+  });
+  innerTrimGeo.center();
+  const innerTrimMesh = new THREE.Mesh(innerTrimGeo, matGoldTrim);
+  innerTrimMesh.position.set(6, 32, 0);
+  layer3.add(innerTrimMesh);
+
+  // Inner floating Technology facet (Translucent optical teal prism in the hollow center)
+  const innerFacetGeo = new THREE.CylinderGeometry(13.5, 13.5, 13.5, 6);
   innerFacetGeo.rotateY(Math.PI / 6);
   const innerFacet = new THREE.Mesh(innerFacetGeo, matGlass);
   innerFacet.castShadow = true;
   innerFacet.position.set(6, 32, 0);
   layer3.add(innerFacet);
 
-  // Center golden energy node
-  const coreNodeGeo = new THREE.OctahedronGeometry(6, 1);
+  // Center golden energy node — faceted octahedron with high specular bounce
+  const coreNodeGeo = new THREE.OctahedronGeometry(6.2, 1);
   const coreNode = new THREE.Mesh(coreNodeGeo, matTeal);
   coreNode.position.set(6, 32, 0);
   layer3.add(coreNode);
@@ -131,25 +188,29 @@ export function buildHeroLogoModel(fitSize = 3.85): LegoModel {
   // 2. KINETIC HEXAGONAL ORBITAL RINGS (Brandbook Page 22 Cover Motif)
   // Two overlapping thin hexagonal contours at complementary angles
   // =========================================================================
-  const ring1Geo = new THREE.TorusGeometry(62, 1.2, 8, 6);
-  const ring1Mat = new THREE.MeshStandardMaterial({
+  const matRingTeal = new THREE.MeshPhysicalMaterial({
     color: TEAL,
-    roughness: 0.25,
-    metalness: 0.65,
+    roughness: 0.16,
+    metalness: 0.72,
+    clearcoat: 0.85,
+    clearcoatRoughness: 0.1,
   });
-  const ring1 = new THREE.Mesh(ring1Geo, ring1Mat);
+  const ring1Geo = new THREE.TorusGeometry(62, 1.35, 10, 6);
+  const ring1 = new THREE.Mesh(ring1Geo, matRingTeal);
   ring1.rotation.x = Math.PI / 2.3;
   ring1.rotation.y = Math.PI / 6;
   ring1.position.set(6, 32, -4);
   layer0.add(ring1);
 
-  const ring2Geo = new THREE.TorusGeometry(74, 1.0, 8, 6);
-  const ring2Mat = new THREE.MeshStandardMaterial({
+  const matRingBlue = new THREE.MeshPhysicalMaterial({
     color: BLUE,
-    roughness: 0.25,
-    metalness: 0.65,
+    roughness: 0.16,
+    metalness: 0.72,
+    clearcoat: 0.85,
+    clearcoatRoughness: 0.1,
   });
-  const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+  const ring2Geo = new THREE.TorusGeometry(74, 1.15, 10, 6);
+  const ring2 = new THREE.Mesh(ring2Geo, matRingBlue);
   ring2.rotation.x = Math.PI / 2.1;
   ring2.rotation.y = -Math.PI / 4;
   ring2.position.set(6, 32, -8);
@@ -159,14 +220,14 @@ export function buildHeroLogoModel(fitSize = 3.85): LegoModel {
   // 3. OFFICIAL 3D INOTEX WORDMARK (I · N · O · T · E · X)
   // Precision letters with correct spacing, vertical spine for E, and bold I
   // =========================================================================
-  const letterDepth = 12;
+  const letterDepth = 12.5;
   const extrudeLetter = (shape: THREE.Shape, depth = letterDepth) => {
     const geo = new THREE.ExtrudeGeometry(shape, {
       depth,
       bevelEnabled: true,
-      bevelSegments: 3,
-      bevelSize: 1.0,
-      bevelThickness: 1.0,
+      bevelSegments: 4,
+      bevelSize: 1.25,
+      bevelThickness: 1.25,
     });
     geo.center();
     return geo;
@@ -183,6 +244,7 @@ export function buildHeroLogoModel(fitSize = 3.85): LegoModel {
   sI.closePath();
   const mI = new THREE.Mesh(extrudeLetter(sI), matBlue);
   mI.castShadow = true;
+  mI.receiveShadow = true;
   mI.position.set(-118, LETTER_Y, 2);
   layer1.add(mI);
 
@@ -201,6 +263,7 @@ export function buildHeroLogoModel(fitSize = 3.85): LegoModel {
   sN.closePath();
   const mN = new THREE.Mesh(extrudeLetter(sN), matBlue);
   mN.castShadow = true;
+  mN.receiveShadow = true;
   mN.position.set(-74, LETTER_Y, 2);
   layer1.add(mN);
 
@@ -224,8 +287,9 @@ export function buildHeroLogoModel(fitSize = 3.85): LegoModel {
   hO.closePath();
   sO.holes.push(hO);
 
-  const mO = new THREE.Mesh(extrudeLetter(sO, 14), matYellow);
+  const mO = new THREE.Mesh(extrudeLetter(sO, 14.5), matYellow);
   mO.castShadow = true;
+  mO.receiveShadow = true;
   mO.position.set(-18, LETTER_Y, 3);
   layer1.add(mO);
 
@@ -242,6 +306,7 @@ export function buildHeroLogoModel(fitSize = 3.85): LegoModel {
   sT.closePath();
   const mT = new THREE.Mesh(extrudeLetter(sT), matBlue);
   mT.castShadow = true;
+  mT.receiveShadow = true;
   mT.position.set(36, LETTER_Y, 2);
   layer1.add(mT);
 
@@ -262,6 +327,7 @@ export function buildHeroLogoModel(fitSize = 3.85): LegoModel {
   sE.closePath();
   const mE = new THREE.Mesh(extrudeLetter(sE), matTeal);
   mE.castShadow = true;
+  mE.receiveShadow = true;
   mE.position.set(86, LETTER_Y, 2);
   layer1.add(mE);
 
@@ -282,44 +348,58 @@ export function buildHeroLogoModel(fitSize = 3.85): LegoModel {
   sX.closePath();
   const mX = new THREE.Mesh(extrudeLetter(sX), matBlue);
   mX.castShadow = true;
+  mX.receiveShadow = true;
   mX.position.set(136, LETTER_Y, 2);
   layer1.add(mX);
 
   // =========================================================================
-  // 4. ARCHITECTURAL PEDESTAL & ACCENT INSETS
-  // Chamfered navy titanium base holding the wordmark
+  // 4. ARCHITECTURAL STEPPED PEDESTAL & ACCENT INSETS
+  // Chamfered navy titanium base holding the wordmark with metallic gold trim
   // =========================================================================
-  const plinthGeo = new THREE.BoxGeometry(290, 8, 38);
-  const plinth = new THREE.Mesh(plinthGeo, matNavy);
-  plinth.castShadow = true;
-  plinth.receiveShadow = true;
-  plinth.position.set(9, LETTER_Y - 42, 0);
-  layer0.add(plinth);
+  // Upper deck with rounded bevels catching light highlights
+  const plinthDeckGeo = new RoundedBoxGeometry(292, 8, 40, 3, 1.2);
+  const plinthDeck = new THREE.Mesh(plinthDeckGeo, matNavy);
+  plinthDeck.castShadow = true;
+  plinthDeck.receiveShadow = true;
+  plinthDeck.position.set(9, LETTER_Y - 42, 0);
+  layer0.add(plinthDeck);
 
-  // Accent metallic groove in brand yellow
-  const grooveGeo = new THREE.BoxGeometry(274, 1.8, 40);
-  const groove = new THREE.Mesh(grooveGeo, matYellow);
+  // Accent metallic groove in brand yellow gold
+  const grooveGeo = new RoundedBoxGeometry(278, 2.2, 42.4, 2, 0.6);
+  const groove = new THREE.Mesh(grooveGeo, matGoldTrim);
   groove.position.set(9, LETTER_Y - 42, 0);
   layer0.add(groove);
 
+  // Foundation plinth grounding the sculpture
+  const plinthSubGeo = new RoundedBoxGeometry(306, 5, 46, 3, 1.2);
+  const plinthSub = new THREE.Mesh(plinthSubGeo, matNavy);
+  plinthSub.castShadow = true;
+  plinthSub.receiveShadow = true;
+  plinthSub.position.set(9, LETTER_Y - 48.5, 0);
+  layer0.add(plinthSub);
+
   // =========================================================================
   // 5. FLOATING GEOMETRIC INNOVATION NODES
-  // Clean crystal prisms and hexagonal chips orbiting the emblem
+  // Clean beveled hexagonal prisms orbiting the emblem at layered depth planes
   // =========================================================================
   const nodeDefs = [
-    { pos: [-94, 48, 16], r: 7, mat: matTeal },
-    { pos: [102, 42, -12], r: 8, mat: matYellow },
-    { pos: [-70, 76, -20], r: 6, mat: matBlue },
-    { pos: [82, 80, 18], r: 7.5, mat: matTeal },
-    { pos: [6, 88, -14], r: 6, mat: matGlass },
+    { pos: [-96, 48, 18], r: 7.2, h: 4.8, mat: matTeal, rx: 0.35, rz: 0.25 },
+    { pos: [104, 42, -14], r: 8.0, h: 5.2, mat: matYellow, rx: -0.25, rz: 0.4 },
+    { pos: [-72, 78, -22], r: 6.2, h: 4.0, mat: matBlue, rx: 0.4, rz: -0.3 },
+    { pos: [84, 82, 20], r: 7.6, h: 5.0, mat: matTeal, rx: -0.3, rz: 0.35 },
+    { pos: [6, 92, -16], r: 6.4, h: 4.2, mat: matGlass, rx: 0.2, rz: -0.2 },
+    { pos: [-124, 12, 10], r: 5.5, h: 3.6, mat: matGoldTrim, rx: 0.5, rz: 0.15 },
+    { pos: [132, 16, -10], r: 5.8, h: 3.8, mat: matBlue, rx: -0.4, rz: 0.45 },
   ];
 
-  nodeDefs.forEach(({ pos, r, mat }) => {
-    const geo = new THREE.CylinderGeometry(r, r, r * 0.7, 6);
-    geo.rotateX(0.4);
-    geo.rotateZ(0.3);
-    const node = new THREE.Mesh(geo, mat);
+  nodeDefs.forEach(({ pos, r, h, mat, rx, rz }) => {
+    // Regular hexagonal prism with smooth top/bottom bevel
+    const hexNodeGeo = new THREE.CylinderGeometry(r, r, h, 6);
+    hexNodeGeo.rotateX(rx);
+    hexNodeGeo.rotateZ(rz);
+    const node = new THREE.Mesh(hexNodeGeo, mat);
     node.castShadow = true;
+    node.receiveShadow = true;
     node.position.set(pos[0], pos[1], pos[2]);
     layer4.add(node);
   });
@@ -348,3 +428,4 @@ export function buildHeroLogoModel(fitSize = 3.85): LegoModel {
 
   return { root, layers, size, palette };
 }
+

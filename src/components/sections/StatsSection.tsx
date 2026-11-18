@@ -58,24 +58,41 @@ export const StatsSection: React.FC = () => {
       data-theme="blue"
       className="flex min-h-[100svh] flex-col justify-center px-5 py-16 sm:px-10 lg:h-[100svh]"
     >
-      <p className="tag label mb-6 self-start">03 — Impact</p>
-      <h2 className="display fa text-[clamp(2rem,4.5vw,4.2rem)] lg:w-[52%]">
-        هر دوره، یک پله بالاتر.
+      <p className="tag label mb-6 self-start">03 — Impact & Scale</p>
+      <h2 className="display fa text-[clamp(2.4rem,5vw,4.4rem)] font-extrabold lg:w-[54%]">
+        هر دوره، <span className="text-[color:var(--yellow)]">یک پله بالاتر</span>.
       </h2>
+      <p className="fa mt-4 max-w-lg text-base text-white/85 sm:text-lg">
+        مقیاسی فراتر از یک نمایشگاه معمولی؛ نبض نوآوری، حجم ارتباطات و اثرگذاری پایدار در اقتصاد دانش‌بنیان.
+      </p>
 
-      <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:w-[52%]">
-        {STATS.map((s) => (
+      {/* نمایشگاه داده‌های ژورنالی با خطوط معماری دقیق به جای کارت‌های معمولی داشبورد */}
+      <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:w-[54%]">
+        {STATS.map((s, idx) => (
           <div
             key={s.label}
-            className="stat rounded-2xl border border-white/15 bg-white/10 p-6 backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/[0.14] shadow-sm"
+            className="stat group relative border-t border-white/20 pt-6 transition-all duration-300 hover:border-[color:var(--yellow)]"
             data-value={s.value}
             data-suffix={s.suffix}
           >
-            <div className="stat-num display fa text-[clamp(2.2rem,4.4vw,3.8rem)] text-white font-extrabold">
-              {s.value.toLocaleString("fa-IR")}{s.suffix}
+            {/* شناسه عددی ردیف */}
+            <span className="label !text-white/40 block mb-2 font-mono">
+              METRIC 0{idx + 1}
+            </span>
+
+            {/* رقم بزرگ با پیشوند/پسوند زرد رنگ */}
+            <div className="flex items-baseline gap-1">
+              <span className="stat-num display fa text-[clamp(2.6rem,4.8vw,4.2rem)] font-extrabold text-white tabular-nums tracking-tight">
+                {s.value.toLocaleString("fa-IR")}{s.suffix}
+              </span>
             </div>
-            <h3 className="fa mt-3 text-base font-bold text-white sm:text-lg">{s.label}</h3>
-            <p className="fa fa-body mt-1 text-xs leading-5 text-white/85 sm:text-sm">{s.sub}</p>
+
+            <h3 className="fa mt-3 text-lg font-bold text-white transition-colors group-hover:text-[color:var(--yellow)]">
+              {s.label}
+            </h3>
+            <p className="fa fa-body mt-2 text-xs leading-6 text-white/80 sm:text-sm">
+              {s.sub}
+            </p>
           </div>
         ))}
       </div>

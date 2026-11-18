@@ -25,6 +25,7 @@ const PILLARS = [
       "بزرگ‌ترین صحنه تبادل نظر با سخنرانان ایران و جهان پیرامون هوش مصنوعی، بیوتکنولوژی، بلاک‌چین و ترندهای کلیدی آینده.",
     stat: "۴۰+ ساعت گفتگوی تخصصی",
     img: "/images/ecosystem-stage.jpg",
+    alt: "صحنه اصلی سخنرانی‌ها و پنل‌های تخصصی اینوتکس استیج",
     tone: "blue" as const,
   },
   {
@@ -36,6 +37,7 @@ const PILLARS = [
       "فضایی اختصاصی برای جلسات رودررو میان تیم‌های نوپا، سرمایه‌گذاران خطرپذیر و فرشتگان کسب‌وکار.",
     stat: "جلسات B2B روزانه",
     img: "/images/ecosystem-cafe.jpg",
+    alt: "فضای جلسات مذاکره رودررو سرمایه‌گذاران و استارتاپ‌ها در کافه سرمایه",
     tone: "yellow" as const,
   },
   {
@@ -47,6 +49,7 @@ const PILLARS = [
       "رقابت سراسری از تورهای استانی تا فینال در پردیس؛ تیم‌ها طرح خود را مقابل داوران ارائه می‌کنند و جایزه می‌گیرند.",
     stat: "۵۰۰+ تیم متقاضی",
     img: "/images/ecosystem-pitch.jpg",
+    alt: "ارائه طرح‌های کسب‌وکار در رقابت اینوتکس پیچ مقابل داوران",
     tone: "teal" as const,
   },
   {
@@ -58,6 +61,7 @@ const PILLARS = [
       "شرکت‌های بزرگ چالش‌ها و مسائل حل‌نشده‌ی خود را به شرکت‌های دانش‌بنیان و نخبگان ارائه می‌کنند.",
     stat: "+۵۰ تقاضای صنعتی",
     img: "/images/ecosystem-reverse.jpg",
+    alt: "نشست ارائه چالش‌ها و تقاضاهای فناوری صنایع بزرگ در ریورس پیچ",
     tone: "blue" as const,
   },
   {
@@ -69,6 +73,7 @@ const PILLARS = [
       "رویداد شبانه با برنامه‌های تعاملی، موسیقی و گفتگوی آزاد؛ جایی برای تجربه‌های شکست و پیروزی کارآفرینان.",
     stat: "شبکه‌سازی تا پاسی از شب",
     img: "/images/ecosystem-inonight.jpg",
+    alt: "گردهمایی شبانه و تبادل تجربه کارآفرینان در رویداد اینونایت",
     tone: "yellow" as const,
   },
   {
@@ -80,6 +85,7 @@ const PILLARS = [
       "بستری برای کارجویان متخصص و کارفرمایان دانش‌بنیان، همراه با میزهای مشاوره حقوقی، مالیاتی و توسعه محصول.",
     stat: "+۱۰۰۰ فرصت شغلی",
     img: "/images/ecosystem-jobstation.jpg",
+    alt: "بستر مصاحبه‌های استخدامی تخصصی و میزهای مشاوره در ایستگاه کار",
     tone: "teal" as const,
   },
 ];
@@ -160,14 +166,32 @@ export const EcosystemSection: React.FC = () => {
         className="flex min-h-[100svh] flex-col justify-center py-20 lg:h-[100svh] lg:w-[48%]"
       >
         <p className="tag label mb-6 self-start">02 — Ecosystem</p>
-        <h2 className="display fa text-[clamp(2.2rem,5vw,4.8rem)]">
+        <h2 className="display fa text-[clamp(2.4rem,5.2vw,4.8rem)] font-extrabold tracking-tight">
           زنجیره یکپارچه
           <br />
-          اکوسیستم نوآوری.
+          <span className="text-[color:var(--blue)]">اکوسیستم نوآوری</span>.
         </h2>
-        <p className="fa mt-6 max-w-md text-base leading-8 text-[color:var(--muted)] sm:text-lg">
+        <p className="fa mt-6 max-w-lg text-base leading-8 text-[color:var(--muted)] sm:text-lg">
           از ایده‌های نوپا تا سرمایه‌گذاری خطرپذیر، تقاضای صنعتی و جذب استعداد؛ شش بخش کلیدی اینوتکس مانند حلقه‌های یک زنجیر به هم متصل‌اند.
         </p>
+
+        {/* دسترسی سریع به ۶ بخش اکوسیستم */}
+        <div className="mt-8 flex flex-wrap gap-2 pt-2">
+          {PILLARS.map((p) => (
+            <a
+              key={p.id}
+              href={`#${p.id}`}
+              className="inline-flex items-center gap-2 rounded-full border border-[color:var(--line)] bg-[color:var(--card-bg)] px-3.5 py-1.5 text-xs font-bold text-[color:var(--fg)] backdrop-blur-md transition-all hover:border-[color:var(--accent)] hover:text-[color:var(--accent)] hover:shadow-xs"
+            >
+              <span
+                className="h-2 w-2 rounded-full"
+                style={{ background: TONE_HEX[p.tone] }}
+                aria-hidden="true"
+              />
+              <span className="fa">{p.title}</span>
+            </a>
+          ))}
+        </div>
       </header>
 
       {/* 6 Service Pillars — Each exactly 100svh on desktop so each service model fits its viewport */}
@@ -176,17 +200,18 @@ export const EcosystemSection: React.FC = () => {
           <article
             key={p.id}
             id={p.id}
-            className={`pillar-row scroll-mt-16 flex min-h-[100svh] flex-col justify-center py-12 transition-all duration-500 lg:h-[100svh] lg:w-[48%] ${
-              active === i ? "translate-x-1" : ""
+            className={`pillar-row scroll-mt-20 flex min-h-[100svh] flex-col justify-center py-12 transition-all duration-500 lg:h-[100svh] lg:w-[48%] ${
+              active === i
+                ? "border-s-2 border-[color:var(--accent)] ps-5 opacity-100"
+                : "border-s-2 border-transparent ps-5 opacity-70 hover:opacity-95"
             }`}
-            style={{ opacity: active === i || active === -1 ? 1 : 0.72 }}
             onMouseEnter={() => (SceneState.rowHover = i)}
             onMouseLeave={() => (SceneState.rowHover = -1)}
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <span
                 aria-hidden="true"
-                className="inline-block h-4 w-[1.1rem] shrink-0"
+                className="inline-block h-3.5 w-3.5 shrink-0"
                 style={{
                   background: TONE_HEX[p.tone],
                   clipPath:
@@ -196,37 +221,44 @@ export const EcosystemSection: React.FC = () => {
               <span className="label font-bold !text-[color:var(--fg)]">
                 {toFa(i + 1).padStart(2, "۰")}
               </span>
-              <span className="label font-bold" dir="ltr">
+              <span className="label font-bold !text-[color:var(--muted)]" dir="ltr">
                 {p.en}
               </span>
             </div>
-            <h3 className="display fa mt-3 text-[clamp(2rem,4.2vw,3.8rem)]">
+
+            <h3 className="display fa mt-3 text-[clamp(2rem,4.2vw,3.6rem)] font-extrabold text-[color:var(--fg)]">
               {p.title}
             </h3>
-            <p className="fa mt-2 text-base font-bold text-[color:var(--fg)] sm:text-lg">
+            <p className="fa mt-2 text-base font-bold text-[color:var(--accent)] sm:text-lg">
               {p.tagline}
             </p>
-            <p className="fa fa-body mt-3 max-w-md text-sm leading-7 text-[color:var(--muted)] sm:text-base">
+            <p className="fa fa-body mt-3 max-w-lg text-sm leading-7 text-[color:var(--muted)] sm:text-base">
               {p.description}
             </p>
 
-            <div className="mt-5 flex max-w-md items-center justify-between gap-6 border-t border-[color:var(--line)] pt-3">
-              <span className="fa text-sm font-bold text-[color:var(--fg)]">{p.stat}</span>
+            <div className="mt-5 flex max-w-md items-center justify-between gap-4 border-t border-[color:var(--line)] pt-3.5">
+              <span className="inline-flex items-center gap-2 rounded-lg border border-[color:var(--line)] bg-[color:var(--card-bg)] px-3 py-1.5 text-xs font-bold text-[color:var(--fg)]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--teal)]" />
+                <span className="fa">{p.stat}</span>
+              </span>
               <a
                 href="#register"
-                className="fa text-sm font-bold text-[color:var(--accent)] underline-offset-4 hover:underline"
+                className="fa text-xs font-bold text-[color:var(--accent)] transition-opacity hover:opacity-75 sm:text-sm"
               >
-                اطلاعات بیشتر ←
+                اطلاعات حضور و ثبت‌نام ←
               </a>
             </div>
 
-            <div className="group mt-5 max-w-md overflow-hidden rounded-xl border border-[color:var(--line)]/80 shadow-sm transition-all duration-300 hover:border-[color:var(--accent)] hover:shadow-md">
+            <div className="group mt-5 max-w-md overflow-hidden rounded-xl border border-[color:var(--line)] bg-[color:var(--card-bg)] shadow-sm transition-all duration-300 hover:border-[color:var(--accent)] hover:shadow-md">
               <ImagePlaceholder
                 src={p.img}
-                alt={p.title}
+                alt={p.alt}
                 tone={p.tone}
+                priority
                 ratio="16/9"
-                className="max-h-[25svh] transition-transform duration-700 ease-out group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 1200px"
+                quality={100}
+                className="max-h-[26svh] transition-transform duration-700 ease-out group-hover:scale-105"
               />
             </div>
           </article>
